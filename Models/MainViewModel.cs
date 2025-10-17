@@ -3,59 +3,77 @@ using System.ComponentModel;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Windows.Input;
+using InventoryApp.Models;
 
-namespace InventoryApp;
-
-public class MainViewModel : INotifyPropertyChanged
+namespace InventoryApp
 {
-    public ObservableCollection<string> QueuedOrders { get; } = new();
-    public ObservableCollection<string> ProcessedOrders { get; } = new();
-
-    private double _totalRevenue;
-    public double TotalRevenue
+    public class MainViewModel : INotifyPropertyChanged
     {
-        get => _totalRevenue;
-        set
+        public ObservableCollection<Order> QueuedOrders { get; } = new();
+        public ObservableCollection<Order> ProcessedOrders { get; } = new();
+
+        private decimal _totalRevenue;
+        public decimal TotalRevenue
         {
-            if (_totalRevenue != value)
+            get => _totalRevenue;
+            set
             {
-                _totalRevenue = value;
-                OnPropertyChanged();
+                if (_totalRevenue != value)
+                {
+                    _totalRevenue = value;
+                    OnPropertyChanged();
+                }
             }
         }
-    }
 
-    public ICommand ProcessNextOrderCommand { get; }
+        public ICommand ProcessNextOrderCommand { get; }
 
-    public MainViewModel()
-    {
-        // tre ordrer til test
-        QueuedOrders.Add("Item 1 - 120");
-        QueuedOrders.Add("Item 2 - 90");
-        QueuedOrders.Add("Item 3 - 90");
+        private readonly Inventory _inventory = new();
+        private readonly OrderBook _orderBook = new();
 
-        ProcessNextOrderCommand = new RelayCommand(_ => ProcessNextOrder());
-    }
-
-    private void ProcessNextOrder()
-    {
-        if (QueuedOrders.Count == 0)
-            return;
-
-        var order = QueuedOrders.First();
-        QueuedOrders.Remove(order);
-        ProcessedOrders.Add(order);
-
-        // hent pris efter bindestreg
-        var parts = order.Split('-');
-        if (parts.Length > 1 && double.TryParse(parts[1].Trim(), out var price))
+        public MainViewModel()
         {
-            TotalRevenue += price;
-            OnPropertyChanged(nameof(TotalRevenue));
-        }
-    }
+            // 🧱 Tilføj testdata
+            var customer = new Customer("Ordre 1: Stor model serie");
+            var item1 = new UnitItem("Laptop", 5000m);
+            var item2 = new UnitItem("Mouse", 250m);
 
-    public event PropertyChangedEventHandler? PropertyChanged;
-    private void OnPropertyChanged([CallerMemberName] string? propertyName = null)
-        => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+            var order1 = new Order(customer);
+            order1.OrderLines.Add(new OrderLine(item1, 1));
+            order1.OrderLines.Add(new OrderLine(item2, 2));
+
+            var order2 = new Order(customer);
+            order2.OrderLines.Add(new OrderLine(item2, 3));
+
+            _orderBook.QueueOrder(order1);
+            _orderBook.QueueOrder(order2);
+
+            foreach (var order in _orderBook.QueuedOrders)
+                QueuedOrders.Add(order);
+
+            ProcessNextOrderCommand = new RelayCommand(_ => ProcessNextOrder());
+        }
+
+        private void ProcessNextOrder()
+        {
+            if (_orderBook.QueuedOrders.Count == 0)
+                return;
+
+            _orderBook.ProcessNextOrder(_inventory);
+
+            QueuedOrders.Clear();
+            foreach (var o in _orderBook.QueuedOrders)
+                QueuedOrders.Add(o);
+
+            ProcessedOrders.Clear();
+            foreach (var o in _orderBook.ProcessedOrders)
+                ProcessedOrders.Add(o);
+
+            TotalRevenue = _orderBook.TotalRevenue;
+        }
+
+        public event PropertyChangedEventHandler? PropertyChanged;
+        protected void OnPropertyChanged([CallerMemberName] string? name = null)
+            => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
+    }
 }

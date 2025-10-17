@@ -1,12 +1,13 @@
 using Avalonia.Controls;
 
-namespace InventoryApp;
-
-public partial class MainWindow : Window
+namespace InventoryApp
 {
-    public MainWindow()
+    public partial class MainWindow : Window
     {
-        InitializeComponent();
-        DataContext = new MainViewModel();
+        public MainWindow()
+        {
+            InitializeComponent();
+            DataContext = new MainViewModel();
+        }
     }
 }

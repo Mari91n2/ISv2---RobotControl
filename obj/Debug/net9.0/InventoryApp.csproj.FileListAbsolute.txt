@@ -5,6 +5,7 @@
 /Users/ceesay/RiderProjects/InventoryApp/obj/Debug/net9.0/InventoryApp.AssemblyInfoInputs.cache
 /Users/ceesay/RiderProjects/InventoryApp/obj/Debug/net9.0/InventoryApp.AssemblyInfo.cs
 /Users/ceesay/RiderProjects/InventoryApp/obj/Debug/net9.0/InventoryApp.csproj.CoreCompileInputs.cache
+/Users/ceesay/RiderProjects/InventoryApp/obj/Debug/net9.0/InventoryApp.sourcelink.json
 /Users/ceesay/RiderProjects/InventoryApp/bin/Debug/net9.0/InventoryApp
 /Users/ceesay/RiderProjects/InventoryApp/bin/Debug/net9.0/InventoryApp.deps.json
 /Users/ceesay/RiderProjects/InventoryApp/bin/Debug/net9.0/InventoryApp.runtimeconfig.json

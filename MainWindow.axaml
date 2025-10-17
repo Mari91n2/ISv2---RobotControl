@@ -1,20 +1,84 @@
 <Window xmlns="https://github.com/avaloniaui"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         x:Class="InventoryApp.MainWindow"
-        Title="Inventory App" Width="400" Height="400">
+        Title="Inventory App"
+        Width="650" Height="600">
 
-    <StackPanel Margin="20">
-        <TextBlock Text="📦 Inventory System" FontWeight="Bold" FontSize="20"/>
-        <Button Content="Process Next Order"
-                Command="{Binding ProcessNextOrderCommand}"
-                Margin="0,10,0,10"/>
-        <TextBlock Text="{Binding TotalRevenue, StringFormat='Total revenue: {0:N2} kr.'}" FontWeight="Bold"/>
+    <ScrollViewer VerticalScrollBarVisibility="Auto">
+        <StackPanel Margin="20">
+            <TextBlock Text="📦 Inventory System" FontWeight="Bold" FontSize="22" Margin="0,0,0,10"/>
 
-        <TextBlock Text="Queued Orders:" FontWeight="Bold" Margin="0,10,0,5"/>
-        <ItemsControl ItemsSource="{Binding QueuedOrders}"/>
+            <Button Content="Process Next Order"
+                    Command="{Binding ProcessNextOrderCommand}"
+                    Margin="0,10,0,10"/>
 
-        <TextBlock Text="Processed Orders:" FontWeight="Bold" Margin="0,10,0,5"/>
-        <ItemsControl ItemsSource="{Binding ProcessedOrders}"/>
-    </StackPanel>
+            <TextBlock Text="{Binding TotalRevenue, StringFormat='Total revenue: {0:N2} kr.'}"
+                       FontWeight="Bold"
+                       Margin="0,0,0,15"/>
+
+            <!-- QUEUED ORDERS -->
+            <TextBlock Text="Queued Orders:" FontWeight="Bold" Margin="0,10,0,5"/>
+            <ItemsControl ItemsSource="{Binding QueuedOrders}">
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate>
+                        <StackPanel Margin="0,0,0,15">
+                            <Border BorderBrush="Gray" BorderThickness="1" CornerRadius="5" Padding="10">
+                                <StackPanel>
+                                    <TextBlock Text="{Binding Customer.Name}" FontWeight="Bold"/>
+                                    <TextBlock Text="{Binding TotalPrice, StringFormat='Total: {0:N2} kr.'}" Margin="0,2,0,2"/>
+
+                                    <!-- OrderLines for each order -->
+                                    <DataGrid ItemsSource="{Binding OrderLines}"
+                                              AutoGenerateColumns="False"
+                                              HeadersVisibility="Column"
+                                              Height="100"
+                                              Margin="0,5,0,0">
+                                        <DataGrid.Columns>
+                                            <DataGridTextColumn Header="Item" Binding="{Binding Item.Name}" />
+                                            <DataGridTextColumn Header="Quantity" Binding="{Binding Quantity}" />
+                                            <DataGridTextColumn Header="Price" Binding="{Binding Item.Price, StringFormat={}{0:N2} kr.}" />
+                                            <DataGridTextColumn Header="Line Total" Binding="{Binding LineTotal, StringFormat={}{0:N2} kr.}" />
+                                        </DataGrid.Columns>
+                                    </DataGrid>
+                                </StackPanel>
+                            </Border>
+                        </StackPanel>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
+
+            <!-- PROCESSED ORDERS -->
+            <TextBlock Text="Processed Orders:" FontWeight="Bold" Margin="0,20,0,5"/>
+            <ItemsControl ItemsSource="{Binding ProcessedOrders}">
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate>
+                        <StackPanel Margin="0,0,0,15">
+                            <Border BorderBrush="Gray" BorderThickness="1" CornerRadius="5" Padding="10">
+                                <StackPanel>
+                                    <TextBlock Text="{Binding Customer.Name}" FontWeight="Bold"/>
+                                    <TextBlock Text="{Binding TotalPrice, StringFormat='Total: {0:N2} kr.'}" Margin="0,2,0,2"/>
+
+                                    <!-- OrderLines for processed order -->
+                                    <DataGrid ItemsSource="{Binding OrderLines}"
+                                              AutoGenerateColumns="False"
+                                              HeadersVisibility="Column"
+                                              Height="100"
+                                              Margin="0,5,0,0">
+                                        <DataGrid.Columns>
+                                            <DataGridTextColumn Header="Item" Binding="{Binding Item.Name}" />
+                                            <DataGridTextColumn Header="Quantity" Binding="{Binding Quantity}" />
+                                            <DataGridTextColumn Header="Price" Binding="{Binding Item.Price, StringFormat={}{0:N2} kr.}" />
+                                            <DataGridTextColumn Header="Line Total" Binding="{Binding LineTotal, StringFormat={}{0:N2} kr.}" />
+                                        </DataGrid.Columns>
+                                    </DataGrid>
+                                </StackPanel>
+                            </Border>
+                        </StackPanel>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
+        </StackPanel>
+    </ScrollViewer>
 </Window>
+
 
