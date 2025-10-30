@@ -1,0 +1,34 @@
+def gripper_example():
+  CONTROL_BOX_IP = "localhost"
+  # Change this on robots which use a separate control box.
+  # For example, a robot with address 172.20.0.202 may have a
+  # control box at address 172.20.0.102.
+
+  global RPC = rpc_factory("xmlrpc", "http://" + CONTROL_BOX_IP_IP + ":41414")
+  # Remote procedure call object for the OnRobot gripper.
+  # Using RPC, we can call functions inside the gripper's control system.
+
+  global TOOL_INDEX = 0
+  # One robot can have many grippers. We have only 1.
+  # This constant needed by OnRobot RPC functions.
+
+  def rg_is_busy():
+    return RPC.rg_get_busy(TOOL_INDEX)
+  end
+
+  # width: [0, 110]
+  # force: [0, 40]
+  # If force is too low, the gripper may not move.
+  def rg_grip(width, force = 20):
+    RPC.rg_grip(TOOL_INDEX, width + .0, force + .0)
+    # `+ .0` required, because rg_grip expects float
+
+    sleep(0.01) # Wait for the gripper to start moving before checking rg_is_busy()
+    while (rg_is_busy()):
+    end
+  end
+
+  rg_grip(0)
+  rg_grip(50)
+  rg_grip(0)
+end
